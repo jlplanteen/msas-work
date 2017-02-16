@@ -1,38 +1,24 @@
-#################################################################
 ##   FULL TRIAL OF CODE ON TOY DATA
 #################################################################
-##  STAT 7900 - Machine Learning - Summer 2016
-##  Final Project: Dimension Reduction to 3D Space
-##  Jacey Planteen; last modified: 7/26/16
-#################################################################
+# Uses dimension reduction function (reduce.3D) and visualizes results
 
-setwd("C:/Users/Jaceybot/Documents/STAT 7900 - Machine Learning/Project")
+#Load functions
+source("reduction.R")
 
 ## READ IN TOY DATA SETS
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-##Can data set
 can.data <- read.csv("can_orig_2clustered.csv", header=FALSE)
-
-##Ecoli data set
 ecoli.data <- read.csv("ecoli_orig_clustered.csv", header=FALSE)
-
-##Iono data set
-iono.data <- read.csv("iono_2.csv", header=FALSE)
-
-##KDD data set
+iono.data <- read.csv("iono_2.csv", header=FALSE) 
 KDD.data <- read.csv("kdd-after_normalization.csv", header=TRUE)
-
-##Shuttle data set
 shuttle.data <- read.csv("shuttle4_orig_clustered.csv", header=FALSE)
-
-##Wine data set
 wine.data <- read.csv("wine_clustered_3.csv", header=FALSE)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ## REDUCE TO 3 DIMENSIONS - SCALE INPUT
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-set.seed(236834267)
+set.seed(236834267) #set seed for repeatability
 system.time(can.scaled <- reduce.3D(can.data, scale=TRUE))
 system.time(ecoli.scaled <- reduce.3D(ecoli.data, scale=TRUE))
 system.time(iono.scaled <- reduce.3D(iono.data, scale=TRUE))
@@ -46,7 +32,7 @@ save(can.scaled, ecoli.scaled, iono.scaled, KDD.scaled,
 
 ## REDUCE TO 3 DIMENSIONS - DO NOT SCALE INPUT
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-set.seed(1192386)
+set.seed(1192386) #set seed for repeatability
 system.time(can.noscale <- reduce.3D(can.data, scale=FALSE))
 system.time(ecoli.noscale <- reduce.3D(ecoli.data, scale=FALSE))
 system.time(iono.noscale <- reduce.3D(iono.data, scale=FALSE))
@@ -54,14 +40,6 @@ system.time(KDD.noscale <- reduce.3D(KDD.data, scale=FALSE))
 system.time(shuttle.noscale <- reduce.3D(shuttle.data, scale=FALSE))
 system.time(wine.noscale <- reduce.3D(wine.data, scale=FALSE))
 
-save(can.noscale, ecoli.noscale, iono.noscale, KDD.noscale, 
-		shuttle.noscale, wine.noscale, file="Unscaled.RData")
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-## Read in saved data
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-load("scaled.Rdata")
-load("unscaled.Rdata")
 
 ## Compare and visualize results
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

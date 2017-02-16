@@ -1,10 +1,54 @@
-#################################################################
-##   FUNCTIONS CODE
-#################################################################
-##  STAT 7900 - Machine Learning - Summer 2016
-##  Final Project: Dimension Reduction to 3D Space
-##  Jacey Planteen; last modified: 7/26/16
-#################################################################
+# This code contains functions to complete feature reduction down to 3 features and visualize results using five different methods:
+#	Principal components analysis, Gaussian kernel principal components analysis (KPCA), Polynomical KPCA,
+#	Gaussian kernel entropy components analysis (KECA), and Polynomial KECA
+# Input should be in a data frame and contain at least 3 features.  The final column in the data frame should contain original 
+# cluster assigments (chosen via kmeans).
+# User can choose to scale or not to scale input (scaling centers each feature to mean 0 and scales to a variance of 1).
+# Functions tune kernel parameters using grid search type techniques.  Optimal parameters are chosen to maximize a metric
+# called visualizability in 3D.  This metric is a measure of the entropy in new clusters assigned via kmeans using the reduced
+# features vs. the original cluster assignments (same number of clusters used).  More agreement equates to lower entropy and higher
+# visualizability.
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Created July, 2016 by J. Planteen for STAT 7900 - Machine Learning at Kennesaw State University
+# Last modified February 15, 2016 by J. Planteen
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Dimension reduction functions and descriptions
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# reduce.3D(raw, scale=TRUE) >> master function for reduction to 3 dimensions
+# 	fix.data(data.frame) >> takes raw data frame and standardizes formatting for further processing
+#	PCA.3D(data, scale) >> completes principal components analysis to reduce to 3 dimensions
+#	RBF.KPCA(data) >> completes Gaussian KPCA and KECA to reduce to 3 dimensions using optimized sigma
+#		RBF.3D(data, sigma) >> reduces to 3 dimensions using KPCA / KECA and Gaussian kernel with given sigma
+#		RBF.optimize(data) >> completes grid search to optimize sigma to maximize visualizability in 3D
+#	Poly.KPCA(data) >> completes Polynomial KPCA and KECA to reduce to 3 dimensions using optimized degree, scale, and offset
+#		Poly.3D(data, degree, scale, offset) >> 3D reduction using KPCA / KECA and poly kernel with given degree, scale, & offset
+#		optimize.poly(data) >> completes grid search of various degrees and offsets to maximize visualizability in 3D
+#	keca(kernel, data) >> complete KECA using a given kernel and data set and returns transformed data (full dimensionality)
+#		Renyi(E.vecs, E.vals) >> calculates Renyi quadratic entropy of supplied eigenvectors and eigenvalues
+#	visualize.3D(features, clusters) >> takes in reduced 3D data & original clusters.  Assigns new clusters and calcs visualizability
+#		total.entropy(matrix) >> calculates total entropy for all clusters
+#		individual.entropy(vector) >> calculates entropy of a single cluster
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Graphing / Visualization functions and descriptions
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# plot.Gauss.opt(data) >> takes output from reduce.3D function and plots visualizability vs. sigma for KPCA/KECA using Gaussian kernel
+# plot.Poly.opt(data) >> takes output from reduce.3D; plots visualizability vs. offset, grouped by degree for KPCA/KECA w/ poly kernel
+# visualize.plot(data) >> takes output from reduce.3D; produces 5 (one for each redux method) 3D scatterplots (grouped by orig clusters)
+#	make.3D.plot(data, method, method.name, vis) >> makes individual 3D scatterplot for given data and reduction method
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Example using built-in iris data set:
+# iris2 <- iris[,1:4]
+# cluster0 <- kmeans(iris2, 3)
+# iris2$Orig.Cluster <- cluster0[[1]]
+# iris.3D <- reduce.3D(iris2)
+# plot.Gauss.opt(iris.3D)
+# plot.Poly.opt(iris.3D)
+# visualize.plot(iris.3D)
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 library(kernlab)
 library(ggplot2); library(reshape2); library(cowplot); 
@@ -13,7 +57,20 @@ library(scatterplot3d)
 ## MASTER FUNCTION
 #################################################################
 reduce.3D <- function(raw.data, scale=TRUE){
-#Read in data set and output 5 different reductions to 3 dimension
+# reduce.3D(raw.data, scale=TRUE)
+#	raw.data -> data frame with original cluster assignments in last column and at least 3 dimensions
+#			in remaining columns (and possibly an ID column which will be excluded)
+#	scale -> Boolean value indicating whether each variable should be scaled to mean 0 and variance 1.  Default is to scale
+# Dimension reduction (to three dimensions) is completed with 5 methods: principal components analysis (PCA),  
+# kernel principal components analysis (KPCA) with Gaussian kernel, KPCA with polynomial kernel, kernel entropy components analysis 
+# (KECA) with Gaussian kernel, and KECA with polynomial kernel.
+# Output: list with five components
+#	result: data frame with the optimal 3 dimensions from each method
+#	visualizability: a list of the visualizability obtained for each of the five methods (with optimal kernel tuning)
+#	KECA.vec: two vectors indicating the Eigen vectors used from the kernel matrix for the two optimal KECA reductions
+#	kernel.params: a list of the optimal kernel parameters used for the four kernel methods	
+#	optimization: a list containing data frames of the parameters used to tune the kernels and the resulting visualizability for each
+
 	data <- fix.data(raw.data) #Standardize data format
 	
 	#Principal components analysis
@@ -72,8 +129,8 @@ fix.data <- function(data.frame){
 #Principal Components analysis
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 PCA.3D <- function(raw, scale=TRUE){
-##Function to take in a data frame of features and vector of clusters
-#and return data frame reduced to 3 features by PCA and cluster label
+##Function to take in a data frame of features and vector of clusters and return data frame reduced to 3 features by PCA and 
+# cluster label
 	features <- raw[,1:(ncol(raw)-1)]
 	if (scale){
 		full.PCA <- prcomp(~., data=features, scale.=TRUE)
@@ -93,8 +150,7 @@ PCA.3D <- function(raw, scale=TRUE){
 #Main function for Guassian KPCA
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 RBF.KPCA <- function(data){
-#Return data frame with 3 principal components from
-#Gaussian kernel PCA & kernel ECA & optimize kernel
+#Return data frame with 3 principal components from Gaussian kernel PCA & kernel ECA & optimize kernel
 	
 	#Estimate optimal sigma for analysis
 	sig.table <- RBF.optimize(data)
@@ -132,8 +188,7 @@ RBF.KPCA <- function(data){
 #Gaussian Kernel Principal Components analysis
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 RBF.3D <- function(data, sigma.test){
-#Return data frame with 3 principal components from
-#Gaussian kernel PCA given a sigma value
+#Return data frame with 3 principal components from Gaussian kernel PCA given a sigma value
 
 	#Determine optima eigenvectors for KECA
 	keca.out <- keca(rbfdot(sigma=sigma.test), as.matrix(data[,
@@ -186,8 +241,7 @@ RBF.optimize <- function(data){
 #Main function for Polynomial KPCA
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Poly.KPCA <- function(data){
-#Return data frame with 3 principal components from
-#Polynomial kernel PCA and optimize parameters
+#Return data frame with 3 principal components from Polynomial kernel PCA and optimize parameters
 	
 	#Estimate optimal kernel parameters
 	params <- optimize.poly(data)
@@ -218,8 +272,7 @@ Poly.KPCA <- function(data){
 #Polynomial Kernel Principal Components analysis
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Poly.3D <- function(data, degree.test, scale.test, offset.test){
-#Return data frame with 3 principal components from
-#Polynomial kernel PCA
+#Return data frame with 3 principal components from Polynomial kernel PCA
 
 	#Use scale if offset sufficiently large
 	if (offset.test > 1) {
@@ -335,8 +388,7 @@ visualize.3D <- function(features, cluster.orig){
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 total.entropy <- function(Matrix){
-##Helper function to calculate the total entropy for new 
-##cluster assignments (matrix input of contingency table:
+##Helper function to calculate the total entropy for new cluster assignments (matrix input of contingency table:
 ##columns new cluster assignments, rows original cluster assigments
 	cluster.sizes <- apply(Matrix,2,sum) #Size of each new cluster
 	#Get entropy of each cluster
@@ -348,8 +400,7 @@ total.entropy <- function(Matrix){
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 individual.entropy <- function(vec){
-##Helper function tocalculate the entropy for an individual 
-##cluster (in vector form)
+##Helper function tocalculate the entropy for an individual cluster (in vector form)
 	N.cluster <- sum(vec) #Total individuals in new cluster
 	p.vec <- vec/N.cluster #proportion in each original cluster
 	cell.entropy <- p.vec*log2(p.vec) #entropy for each individual cell
@@ -368,8 +419,7 @@ individual.entropy <- function(vec){
 #Gaussian Kernel Optimization Plot
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 plot.Gauss.opt <- function(data){
-#Plot Gaussian kernel optimization data for KPCA and KECA
-#given output from reduce.3D fucntion
+#Plot Gaussian kernel optimization data for KPCA and KECA, given output from reduce.3D fucntion
 	opt.set <- data$optimization$Gaussian 
 	opt.long <- melt(opt.set, id = "sigma", measure = c("KPCA.vis", "KECA.vis"))
 	opt.long$variable <- gsub(".vis", "", opt.long$variable)
@@ -385,9 +435,8 @@ plot.Gauss.opt <- function(data){
 
 #Polynomial Kernel Optimization Plots
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-plot.Poly.opt <- function(data,g.offset=0.1){
-#Plot polynomial kernel optimization data for KPCA and KECA
-#given output from reduce.3D fucntion
+plot.Poly.opt <- function(data){
+#Plot polynomial kernel optimization data for KPCA and KECA, given output from reduce.3D fucntion
 	opt.set <- data$optimization$Polynomial 
 	min.val <- min(c(0, opt.set$KPCA.vis, opt.set$KECA.vis))
 	KPCA <- ggplot(opt.set) + aes(x = log10(offset), y = KPCA.vis, colour = 

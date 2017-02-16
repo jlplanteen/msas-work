@@ -20,4 +20,6 @@ _Ying Xie, Pooja Chenna, Jing (Selena) He, Linh Le, and Jacey Planteen, “Visua
 http://dl.acm.org/citation.cfm?id=3006299.3006340
 
 ## Repository Structure
-...under construction...
+main >> key functions and example
+
+test sets >> contains csv files to use as examples with code
