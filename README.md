@@ -21,6 +21,9 @@ http://dl.acm.org/citation.cfm?id=3006299.3006340
 
 ## Repository Structure
 main >> key functions and example
+
   reduction.R > main file with all pertinent functions for dimension reduction and visualization
+  
   example.R > code which reduces and visualizes the six test data sets
+  
 test sets >> contains csv files to use as examples with code
