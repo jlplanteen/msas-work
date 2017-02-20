@@ -6,7 +6,7 @@ Reduce various high dimensional data sets to three dimensions while minimizing s
   - Kernel Principal Components Analysis (KPCA)
   - Kernel Entropy Components Analysis (KECA)
 
-The kernel methods utilized both Gaussian and Polynomial kernels.  Kernel performance was assessed using a measure called visualizability in 3 dimensions.  This method compared cluster assignments on the original, high dimension data versus new cluster assignments only using the reduced 3 dimensions.  Higher visualizability corresponds to dimension reduction which better preserves the original clusters.
+The kernel methods utilized both Gaussian (also called RBF, radial basis function) and Polynomial kernels.  Kernel performance was assessed using a measure called visualizability in 3 dimensions.  This method compared cluster assignments on the original, high dimension data versus new cluster assignments only using the reduced 3 dimensions.  Higher visualizability corresponds to dimension reduction which better preserves the original clusters.
 
 All coding was completed in R.  The kernlab package was used for KPCA reduction methods.  The KECA funtions were created, however, using some of the functionality from the kernlab package.  The algorithm for KECA was derived from:
 
@@ -20,6 +20,6 @@ _Ying Xie, Pooja Chenna, Jing (Selena) He, Linh Le, and Jacey Planteen, “Visua
 http://dl.acm.org/citation.cfm?id=3006299.3006340
 
 ## Repository Structure
-main >> key functions and example
+graphics >> contains png files of graphical output from the visualization functions for the example data sets.
 
-test sets >> contains csv files to use as examples with code
+main >> key functions and example script
