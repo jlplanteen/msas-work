@@ -19,7 +19,7 @@ _Ying Xie, Pooja Chenna, Jing (Selena) He, Linh Le, and Jacey Planteen, “Visua
 
 http://dl.acm.org/citation.cfm?id=3006299.3006340
 
-## Repository Structure
+## Structure
 graphics >> contains png files of graphical output from the visualization functions for the example data sets.
 
 main >> key functions and example script
