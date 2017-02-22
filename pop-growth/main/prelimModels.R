@@ -7,7 +7,7 @@
 ## Jacey Planteen; R-Day 11/20/15
 
 require(plyr); require(car); require(MASS)
-load("popData.R")
+load("popData.Rdata")
 
 #### Model Development and Reduction
 ################################################################
