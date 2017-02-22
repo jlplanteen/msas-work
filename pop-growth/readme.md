@@ -16,3 +16,9 @@ alone. However, numerous regressors are significant and could be useful indicato
 the population under five years old, the percent enrolled in college, the percent of the population in the labor force, geographic region, 
 and the difference between the average family size and average household size. Thus, though this model has substantial error, it does have 
 some utility and value for understanding population growth and decline.
+
+## Files and Structure
+
+main: contains scripts to clean and process data, develop models, and visualize data with choropleths.
+
+PopulationChangePoster.pdf: poster as presented at 2015 R Day competition
