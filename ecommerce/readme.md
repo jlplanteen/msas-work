@@ -1,14 +1,14 @@
 # Gaining Insight into Online Sales of a Traditionally In-Store Purchase
-Language: R
+__Language: R__
 
 Analysis of premium lead-acid battery sales on Amazon.com to gain insights into the strengths and weaknesses of different brand names 
 and other factors, such as volume of customer reviews and review ratings.  
 
 Techniques utilized include:
-    -  Web scraping to gather data
-    -  Text mining of customer reviews
-    -  Loglinear regression to test for association among categorical variables
-    -  Modeling of sales rank (surrogate measure for sales volume) using linear regression
+   -  Web scraping to gather data
+   -  Text mining of customer reviews
+   -  Loglinear regression to test for association among categorical variables
+   -  Modeling of sales rank (surrogate measure for sales volume) using linear regression
 
 ## Executive Summary
 In today’s age of smartphones, social media, and online connectivity, an ever-growing list of products can be purchased online, which now 
@@ -45,4 +45,5 @@ provide a direct customer feedback pipeline to understand not only their own pro
 ## Structure
 scraper >> code and sample output files from data collection phase: scraping product info and customer reviews
 analysis >> code for modeling and text mining
+
 output >> final report and additional graphics generated from analysis
