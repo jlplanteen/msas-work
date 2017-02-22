@@ -19,7 +19,7 @@
 
 require(plyr); require(car); require(MASS)
 
-load("popData.R")
+load("popData.Rdata")
 
 # Model Performance Functions
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,7 +69,6 @@ OLS.1st.final <- lm(Ratio2 ~ Region + Male + Age.Under5 + Age.65.Plus +
 	Construction + Retail + Finance + Arts + PublicAdmin + Poverty.Indiv + 
 	log(Density) + College, data=train.data)
 summary(OLS.1st.final)
-anova(OLS.1st.final, OLS.1st.r1)
 vif(OLS.1st.final)
 plot(OLS.1st.final)
 avPlots(OLS.1st.final)
@@ -85,7 +84,6 @@ OLS.int.final <- lm(Ratio2 ~ Region + Own.Housing +
 	Region:Median.Income + 	Region:Agri + Region:Poverty.Indiv, 
 	data=train.data)
 summary(OLS.int.final)
-anova(OLS.int.final, OLS.int.r0)
 plot(OLS.int.final)
 
 ## Reduced ROBUST REGRESSION using OLS Model Structure
@@ -198,4 +196,4 @@ select.pred <- predict(OLS.1st.final, select.obs, interval="predict")
 select.pred <- 1/select.pred - 1
 select.obs[, c(2, 9, 10)]
 
-save(model.data, OLS.1st.final, OLS.1st.std, file="FinalModel.R")
+save(model.data, OLS.1st.final, OLS.1st.std, file="FinalModel.Rdata")
