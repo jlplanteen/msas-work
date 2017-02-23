@@ -1,5 +1,10 @@
 # Modeling Population Growth in the United States
 
+__Language: R__
+
+Packages: plyr, prospectr, car, MASS, ggplot2, maps, mapproj, rgdal, RColorBrewer
+
+
 Modeling of US population growth between 2000 and 2010 by county using US census data. OLS and robust regression utilized to develop 
 various models. This research was submitted to Kennesaw State University's 2015 R Day poster competition and won 1st place in the graduate 
 competition.
