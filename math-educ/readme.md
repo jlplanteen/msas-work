@@ -2,7 +2,7 @@
 
 __Language: SAS__
 
-Development of model for mathematical ability using gender, self-control, and time (five data collection waves during 
+Development of model for mathematical ability in Hispanic children using gender, self-control, and time (five data collection waves during 
 elementary school) to understand the potential impact of self-control on math skills development.  Techniques used included:
   -  Longitudinal analysis (generalized linear model with unstructured covariance matrix)
   -  Logistic regression (for missing data analysis)
@@ -19,7 +19,6 @@ parsimonious model linking math performance to time, age at entry to Kindergarte
 It was ultimately found that higher self control levels did predict higher mathematical performance as well as a higher rate of increase 
 in mathematical ability over time for Hispanic students.  Additionally, Kindergarten entry age, while not the primary predictor of 
 interest, was found to have a large impact on mathematical ability which persisted over the course of this study.  Finally, perhaps most 
-importantly, it was found that a small subset of students had uncharacteristically high mathematical ability at the fall of Kindergarten.  
-Better understanding the reasons behind this initial success might prove to be the most beneficial area for future research.  The results 
+importantly, it was found that a small subset of students had uncharacteristically high mathematical ability at the fall of Kindergarten.  Better understanding the reasons behind this initial success might prove to be the most beneficial area for future research.  The results 
 from this study may help educators develop more inclusive and effective educational strategies; strategies specifically geared towards 
 those students with lower self-control may help lessen the gap in mathematical ability.
