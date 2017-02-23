@@ -1,6 +1,8 @@
 # Gaining Insight into Online Sales of a Traditionally In-Store Purchase
 __Language: R__
 
+Packages: sqldf, car, ggplot2, tm, Deducer, RWeka, wordcloud
+
 Analysis of premium lead-acid battery sales on Amazon.com to gain insights into the strengths and weaknesses of different brand names 
 and other factors, such as volume of customer reviews and review ratings.  
 
@@ -43,7 +45,6 @@ This study did reveal that online retailer websites can provide a wealth of info
 provide a direct customer feedback pipeline to understand not only their own products’ performance but also that of other brands. 
 
 ## Structure
-scraper >> code and sample output files from data collection phase: scraping product info and customer reviews
-analysis >> code for modeling and text mining
+analysis >> code for web scraping, modeling, and text mining
 
 output >> final report and additional graphics generated from analysis
