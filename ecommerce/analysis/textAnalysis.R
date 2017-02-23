@@ -336,25 +336,17 @@ pred.duration <- ggplot(predix, aes(x=Rating, y=Years, group=Brand)) +
 #Plot densities of durations by brand
 brand.duration <- ggplot(time.comments2, aes(x=Years, group=Brand)) + 
 		geom_density(kernel="gaussian", aes(fill=Brand),alpha=0.3) + 
-		theme_bw() + labs(x="Years", y="Density") + 
+		theme_bw() + labs(x="Years", y="Density", title=
+		"Distribution of Time Duration in Reviews by Brand") + 
 		theme(legend.position=c(0.8,0.8)) + scale_fill_brewer(
 		name="Brand", type="qual", palette=3)
-brand.duration <- ggplot(time.comments2, aes(y=Years, x=Brand)) + 
-		geom_boxplot(aes(fill=Brand),alpha=0.5) + 
-		theme_bw() + labs(x="Brand", y="Years") + 
-		theme(legend.position="bottom", legend.key=element_blank()) + 
-		scale_fill_brewer(name="Brand", type="qual", palette=3)
     
 #Plot densities of duration by rating
-rating.duration <- ggplot(time.comments2, aes(x=Years, group=Rating)) + 
-		geom_density(kernel="gaussian", aes(fill=as.factor(Rating),
-		color=as.factor(Rating)),size=1,
-		alpha=0.2) + theme_bw() + labs(x="Years", y="Density") + 
-		theme(legend.position=c(0.8,0.8)) + scale_fill_discrete(
-		name="Review Rating") + scale_color_discrete(name="Review Rating")
 rating.duration <- ggplot(time.comments2, aes(y=Years, x=as.factor(Rating))) + 
 		geom_boxplot(aes(fill=as.factor(Rating))) + theme_bw() + 
-		labs(x="Rating (stars)", y="Years") + theme(legend.position="bottom") + 
+		labs(x="Rating (stars)", y="Years", 
+		title="Time Duration in Review vs. Review Rating") + 
+		theme(legend.position="bottom") + 
 		scale_fill_discrete(name="Review Rating")
 
 #Grab terms of interest and analyze presence for association with brand and rating
@@ -546,7 +538,7 @@ pchisq(priusfit.fit2$deviance, df=priusfit.fit2$df.residual,
 		lower.tail=FALSE)
 
 #Make data frame with dates of reviews with key terms and the associated key term
-for (i in 1:length(key.words)){
+for (i in 1:(length(key.words)-1)){
 	temp <- key.comments[key.comments[,names(key.comments)==
 			key.words[i]]==1, c("Rating","Date2")]
 	temp$Term <- key.words[i]
@@ -562,5 +554,6 @@ for (i in 1:length(key.words)){
 term.density <- ggplot(test, aes(x=Date2, group=Term)) + 
 		geom_density(kernel="gaussian", aes(y=..count..,
 		color=Term),size=1) + 
-		theme_bw() + labs(x="Date", y="Density") + 
+		theme_bw() + labs(x="Date", y="Density", title=
+		"Density of Key Terms in Reviews over Time") + 
 		theme(legend.position=c(0.12,0.8))
